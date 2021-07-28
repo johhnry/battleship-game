@@ -42,4 +42,21 @@ describe('Square behavior', function () {
     square.placeBoat(Cruiser);
     expect(square.hasABoat()).to.be.true;
   });
+
+  it('Should give a string representation of a Square', function () {
+    const square = new Square();
+    expect(square.toString()).to.be.equal(' ');
+
+    square.hit();
+    expect(square.toString()).to.be.equal('X');
+
+    square.miss();
+    expect(square.toString()).to.be.equal('O');
+
+    square.placeBoat(Cruiser);
+    expect(square.toString()).to.be.equal('3');
+
+    square.content = undefined;
+    expect(square.toString()).to.be.equal('B');
+  });
 });
