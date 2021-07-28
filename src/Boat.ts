@@ -5,10 +5,16 @@ export interface Boat {
   size: number;
 }
 
-const Carrier: Boat = { id: 1, size: 5 };
-const Battleship: Boat = { id: 2, size: 4 };
-const Cruiser: Boat = { id: 3, size: 3 };
-const Submarine: Boat = { id: 4, size: 3 };
-const Destroyer: Boat = { id: 5, size: 2 };
+export const Carrier: Boat = { id: 1, size: 5 };
+export const Battleship: Boat = { id: 2, size: 4 };
+export const Cruiser: Boat = { id: 3, size: 3 };
+export const Submarine: Boat = { id: 4, size: 3 };
+export const Destroyer: Boat = { id: 5, size: 2 };
 
-export { Carrier, Battleship, Cruiser, Submarine, Destroyer };
+export const boats: Boat[] = [
+  Carrier,
+  Battleship,
+  Cruiser,
+  Submarine,
+  Destroyer
+];
