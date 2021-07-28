@@ -1,0 +1,21 @@
+{
+  "extension": [
+    ".ts"
+  ],
+  "require": [
+    "ts-node/register"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.d.ts",
+    "**/*.spec.ts",
+    "**/cli.ts"
+  ],
+  "reporter": [
+    "html",
+    "text"
+  ],
+  "all": true
+}

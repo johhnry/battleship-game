@@ -1,0 +1,47 @@
+{
+  "name": "battleship-game",
+  "version": "1.0.0",
+  "description": "Battleship game",
+  "main": "index.js",
+  "author": "Joseph HENRY",
+  "license": "MIT",
+  "private": "true",
+  "directories": {
+    "lib": "./lib",
+    "src": "./src",
+    "test": "./src"
+  },
+  "scripts": {
+    "postinstall": "husky install",
+    "cli": "ts-node src/cli.ts",
+    "lint": "eslint src --ext .ts",
+    "fmt": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "test": "mocha --require ts-node/register 'src/**/*.spec.ts'",
+    "coverage": "nyc npm run test",
+    "build": "tsc --project tsconfig.json",
+    "clean": "rimraf dist coverage .nyc_output",
+    "ts-node": "ts-node",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "@types/chai": "^4.2.21",
+    "@types/mocha": "^8.2.3",
+    "@types/node": "^16.3.3",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "chai": "^4.3.4",
+    "eslint": "^7.31.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^7.0.0",
+    "mocha": "^9.0.2",
+    "nyc": "^15.1.0",
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "source-map-support": "^0.5.19",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  }
+}
