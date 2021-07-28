@@ -11,7 +11,7 @@ import {
 } from './Grid';
 import { GridLocation } from './GridLocation';
 import { SquareStatus } from './Square';
-import { Battleship, Cruiser, Submarine } from './Boat';
+import { Battleship, boats, Cruiser, Destroyer, Submarine } from './Boat';
 
 describe('Grid creation', function () {
   it('Create a 10x10 empty grid', function () {
@@ -140,6 +140,29 @@ describe('Grid behavior', function () {
     }).not.to.throw(BoatPlacementError);
   });
 
+  it('Should give all the possible locations for a boat on a grid', function () {
+    // For all the possible boats
+    for (const boat of boats) {
+      const grid = new Grid(boat.size);
+      const possibleLocations = grid.getPossibleBoatPlacements(boat);
+
+      // Compute the number of possible locations for a boat
+      const expectedNumberOfPossibleLocations = 8 + (grid.size - 2) * 4;
+
+      expect(possibleLocations).to.be.lengthOf(
+        expectedNumberOfPossibleLocations
+      );
+
+      // Test if we can effectively place the boats on the grid
+      for (const { location, direction } of possibleLocations) {
+        const tempGrid = new Grid(grid.size);
+        expect(() =>
+          tempGrid.placeBoat(boat, location, direction)
+        ).not.to.throw(Error);
+      }
+    }
+  });
+
   it('Should give a valid boat placement on a large grid', function () {
     const grid = new Grid(10);
 
@@ -151,5 +174,16 @@ describe('Grid behavior', function () {
   it('Should give an error because there are no available boat space', function () {
     const grid = new Grid(2);
     expect(() => grid.getRandomPossibleBoatPlacement(Cruiser)).to.throw(Error);
+  });
+
+  it('Should return the string representation of the grid', function () {
+    const grid = new Grid(2);
+
+    grid.placeBoat(Destroyer, new GridLocation(0, 1), CardinalDirection.SOUTH);
+
+    const expectedGridString = `| |5|
+                                | |5|`.replace(/  +/g, '');
+
+    expect(grid.toString()).to.be.equal(expectedGridString);
   });
 });
