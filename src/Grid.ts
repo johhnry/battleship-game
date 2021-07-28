@@ -237,7 +237,7 @@ export class Grid {
       for (let j = 0; j < this.size; j++) {
         result += this.getSquareAt(i, j).toString() + '|';
       }
-      result += '\n';
+      if (i < this.size - 1) result += '\n';
     }
 
     return result;
