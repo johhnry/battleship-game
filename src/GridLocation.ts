@@ -6,7 +6,12 @@ export class GridLocation {
   row: number;
   col: number;
 
-  constructor(row: number, col: number) {
+  /**
+   * Construct a new GridLocation object
+   * @param row the row index
+   * @param col the column index
+   */
+  public constructor(row: number, col: number) {
     this.row = row;
     this.col = col;
   }
@@ -26,6 +31,6 @@ export class GridLocation {
    * @returns The string representation of a location
    */
   public toString(): string {
-    return `(${this.col}, ${this.row})`;
+    return `(${this.row}, ${this.col})`;
   }
 }
