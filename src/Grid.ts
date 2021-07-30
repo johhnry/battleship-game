@@ -1,16 +1,17 @@
 import { Boat } from './Boat';
 import { GridLocation } from './GridLocation';
 import { Square, SquareStatus } from './Square';
-
-abstract class HitError extends Error {}
-export class BoatAlreadyHitError extends HitError {}
-export class SquareAlreadyMissError extends HitError {}
-export class InvalidSquareError extends HitError {}
-
-export class BoatPlacementError extends Error {}
-export class InvalidBoatLocationError extends Error {}
-export class InvalidGridSizeError extends Error {}
-export class NoMoreAvailableBoatPlacement extends Error {}
+import { chooseRandomFrom, initializeTwoDimensionalArray } from './utils';
+import {
+  SquareAlreadyMissError,
+  InvalidSquareError,
+  BoatPlacementError,
+  InvalidBoatLocationError,
+  InvalidGridSizeError,
+  NoMoreFreeLocationOnTheGridError,
+  NoMoreAvailableBoatPlacementError,
+  BoatAlreadyHitError
+} from './errors';
 
 export enum CardinalDirection {
   NORTH,
@@ -42,28 +43,30 @@ export class Grid {
   constructor(size: number) {
     if (size <= 0) throw new InvalidGridSizeError();
     this.size = size;
-    this.initializeSquares();
+    this.squares = initializeTwoDimensionalArray(this.size, this.size, Square);
   }
 
-  /**
-   * Initialize the two dimensionnal array of squares
-   */
-  private initializeSquares(): void {
+  getRandomFreeLocation(): GridLocation {
+    const freeLocations: GridLocation[] = [];
+
+    // Go through all the squares
     for (let i = 0; i < this.size; i++) {
-      this.squares[i] = [];
       for (let j = 0; j < this.size; j++) {
-        this.squares[i][j] = new Square();
+        const square = this.getSquareAt(i, j);
+
+        // If the square is empty, add it to the list
+        if (square.isEmpty()) {
+          freeLocations.push(new GridLocation(i, j));
+        }
       }
     }
-  }
 
-  getRandomHit(): GridLocation {
-    const randint = (max: number) => Math.floor(Math.random() * max);
+    // Throw an error when there's no free locations
+    if (freeLocations.length === 0) {
+      throw new NoMoreFreeLocationOnTheGridError();
+    }
 
-    const col = randint(this.size);
-    const row = randint(this.size);
-
-    return new GridLocation(col, row);
+    return chooseRandomFrom(freeLocations);
   }
 
   getSquareAtLocation(location: GridLocation): Square {
@@ -222,11 +225,14 @@ export class Grid {
    */
   getRandomPossibleBoatPlacement(boat: Boat): BoatPlacement {
     const placements = this.getPossibleBoatPlacements(boat);
-    if (placements.length === 0)
-      throw new NoMoreAvailableBoatPlacement(
+
+    if (placements.length === 0) {
+      throw new NoMoreAvailableBoatPlacementError(
         `No more valid places to put a ${boat}`
       );
-    return placements[Math.floor(Math.random() * placements.length)];
+    }
+
+    return chooseRandomFrom(placements);
   }
 
   toString(): string {

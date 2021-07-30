@@ -1,17 +1,17 @@
 import { expect } from 'chai';
+import { Grid, CardinalDirection } from '../src/Grid';
 import {
   BoatAlreadyHitError,
   BoatPlacementError,
-  CardinalDirection,
-  Grid,
   InvalidBoatLocationError,
   InvalidGridSizeError,
   InvalidSquareError,
+  NoMoreFreeLocationOnTheGridError,
   SquareAlreadyMissError
-} from './Grid';
-import { GridLocation } from './GridLocation';
-import { SquareStatus } from './Square';
-import { Battleship, boats, Cruiser, Destroyer, Submarine } from './Boat';
+} from '../src/errors';
+import { GridLocation } from '../src/GridLocation';
+import { SquareStatus } from '../src/Square';
+import { Battleship, boats, Cruiser, Destroyer, Submarine } from '../src/Boat';
 
 describe('Grid creation', function () {
   it('Create a 10x10 empty grid', function () {
@@ -36,12 +36,16 @@ describe('Grid creation', function () {
 });
 
 describe('Grid behavior', function () {
-  it('Gives a random hit location on the grid', function () {
+  it('Gives a random free location on the grid', function () {
     const grid = new Grid(10);
 
-    for (let i = 0; i < 1000; i++) {
-      const hit = grid.getRandomHit();
+    for (let i = 0; i < 100; i++) {
+      const hit = grid.getRandomFreeLocation();
+
+      expect(hit.col).to.be.greaterThanOrEqual(0);
       expect(hit.col).to.be.lessThan(grid.size);
+
+      expect(hit.row).to.be.greaterThanOrEqual(0);
       expect(hit.row).to.be.lessThan(grid.size);
     }
   });
@@ -76,13 +80,22 @@ describe('Grid behavior', function () {
     }).to.throw(BoatAlreadyHitError);
   });
 
+  it("Can't miss a square two times", function () {
+    const grid = new Grid(5);
+
+    const location = new GridLocation(1, 3);
+    grid.hitAt(location);
+
+    expect(() => grid.hitAt(location)).to.throw(SquareAlreadyMissError);
+  });
+
   it('Should hit 1000 times randomly on a 10x10 grid and throw an error', function () {
     expect(() => {
       const grid = new Grid(10);
       for (let i = 0; i < 1000; i++) {
-        grid.hitAt(grid.getRandomHit());
+        grid.hitAt(grid.getRandomFreeLocation());
       }
-    }).to.throw(SquareAlreadyMissError);
+    }).to.throw(NoMoreFreeLocationOnTheGridError);
   });
 
   it('Should be impossible to hit on an invalid square', function () {

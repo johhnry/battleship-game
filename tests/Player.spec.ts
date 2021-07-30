@@ -1,11 +1,9 @@
 import { expect } from 'chai';
-import { Grid } from './Grid';
-import { Player } from './Player';
+import { Player } from '../src/Player';
 
 describe('Player tests', function () {
   it("Place the player's boats on the grid", function () {
-    const grid = new Grid(10);
-    const player = new Player(grid);
+    const player = new Player(10);
 
     player.placeBoats();
 

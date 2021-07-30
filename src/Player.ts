@@ -7,13 +7,25 @@ import {
   Submarine,
   Destroyer
 } from './Boat';
+import { GridLocation } from './GridLocation';
 
 export class Player {
+  /** The initial list of boats the user have to put on the grid */
   initialBoats: Boat[];
+
+  /** The player's grid where the boats are placed */
   grid: Grid;
 
-  constructor(grid: Grid) {
-    this.grid = grid;
+  /** The target grid is where the player puts the hit and misses of the oponnent's grid */
+  targetGrid: Grid;
+
+  /**
+   * Create a Player that has two grids (own and target)
+   * @param gridSize the size of the grids
+   */
+  constructor(gridSize: number) {
+    this.grid = new Grid(gridSize);
+    this.targetGrid = new Grid(gridSize);
     this.initialBoats = [Carrier, Battleship, Cruiser, Submarine, Destroyer];
   }
 
@@ -24,7 +36,7 @@ export class Player {
   placeBoats(): void {
     const numberOfBoats = this.initialBoats.length;
 
-    for (let m = 0; m < numberOfBoats; m++) {
+    for (let i = 0; i < numberOfBoats; i++) {
       const boat = this.initialBoats.pop();
       if (boat === undefined) throw new Error("The player can't add a boat");
 
@@ -35,8 +47,8 @@ export class Player {
     }
   }
 
-  /*play(): void {
-    const randomHit: GridLocation = this.grid.getRandomHit();
+  play(): void {
+    const randomHit: GridLocation = this.grid.getRandomFreeLocation();
     this.grid.hitAt(randomHit);
-  }*/
+  }
 }

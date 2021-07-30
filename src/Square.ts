@@ -29,6 +29,10 @@ export class Square {
     this.content = boat.id;
   }
 
+  isEmpty(): boolean {
+    return this.status === SquareStatus.Empty && this.content === undefined;
+  }
+
   hasABoat(): boolean {
     return this.status === SquareStatus.Boat && this.content !== undefined;
   }

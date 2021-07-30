@@ -9,19 +9,19 @@
   "directories": {
     "lib": "./lib",
     "src": "./src",
-    "test": "./src"
+    "test": "./tests"
   },
   "scripts": {
     "postinstall": "husky install",
+    "prepare": "husky install",
     "cli": "ts-node src/cli.ts",
     "lint": "eslint src --ext .ts",
-    "fmt": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "test": "mocha --require ts-node/register 'src/**/*.spec.ts'",
+    "fmt": "prettier --config .prettierrc 'src/**/*.ts' 'tests/**/*.ts' --write",
+    "test": "mocha --require ts-node/register 'tests/**/*.spec.ts'",
     "coverage": "nyc npm run test",
     "build": "tsc --project tsconfig.json",
     "clean": "rimraf dist coverage .nyc_output",
-    "ts-node": "ts-node",
-    "prepare": "husky install"
+    "ts-node": "ts-node"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",

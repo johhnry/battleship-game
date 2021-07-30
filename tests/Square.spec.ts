@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { Cruiser } from './Boat';
-import { Square, SquareStatus } from './Square';
+import { Cruiser } from '../src/Boat';
+import { Square, SquareStatus } from '../src/Square';
 
 describe('Square creation', function () {
   it('Create an empty Square', function () {

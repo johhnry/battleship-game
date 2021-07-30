@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { GridLocation } from './GridLocation';
+import { GridLocation } from '../src/GridLocation';
 
 function testGridLocationToBeEqualTo(
   location: GridLocation,
