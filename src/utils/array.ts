@@ -31,3 +31,13 @@ export function initializeTwoDimensionalArray<T>(
 
   return array;
 }
+
+/**
+ * Flatten a two dimensional array
+ * From: https://schneidenbach.gitbooks.io/typescript-cookbook/content/functional-programming/flattening-array-of-arrays.html
+ * @param array the 2D array
+ * @returns the flattened 1D array
+ */
+export function flattenTwoDimensionalArray<T>(array: T[][]): T[] {
+  return ([] as T[]).concat(...array);
+}

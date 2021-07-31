@@ -10,7 +10,25 @@
 
 This repository is an implementation of the [Battleship game](<https://en.wikipedia.org/wiki/Battleship_(game)>) in TypeScript.
 
-It was meant to learn some useful programming workflow concepts such as [Test Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) (TDD), [unit testing](https://en.wikipedia.org/wiki/Unit_testing), [code coverage](https://en.wikipedia.org/wiki/Code_coverage), [documentation generation](https://en.wikipedia.org/wiki/Software_documentation), [CI/CD](https://en.wikipedia.org/wiki/Continuous_integration)...
+It was meant to learn some useful programming workflow concepts such as [Test Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) (TDD), [unit testing](https://en.wikipedia.org/wiki/Unit_testing), [code coverage](https://en.wikipedia.org/wiki/Code_coverage), [documentation generation](https://en.wikipedia.org/wiki/Software_documentation), [CI/CD](https://en.wikipedia.org/wiki/Continuous_integration), git hooks...
+
+## Getting started
+
+This project can be bootstraped with NPM or Yarn in order to install the dependencies listed in the [`package.json`](package.json) file:
+
+```shell
+$ git clone https://github.com/johhnry/battleship-game
+$ cd battleship-game
+$ yarn # or npm install
+```
+
+### Running the tests
+
+To run the tests, do:
+
+```shell
+$ yarn run test
+```
 
 ## Contributing
 

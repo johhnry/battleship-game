@@ -9,6 +9,8 @@ import {
 } from './Boat';
 import { GridLocation } from './GridLocation';
 
+export class PlayerDidNotPlaceBoatsError extends Error {}
+
 export class Player {
   /** The initial list of boats the user have to put on the grid */
   initialBoats: Boat[];
@@ -19,11 +21,14 @@ export class Player {
   /** The target grid is where the player puts the hit and misses of the oponnent's grid */
   targetGrid: Grid;
 
+  /** Wether or not the player placed his boats */
+  placedBoats = false;
+
   /**
    * Create a Player that has two grids (own and target)
    * @param gridSize the size of the grids
    */
-  constructor(gridSize: number) {
+  public constructor(gridSize: number) {
     this.grid = new Grid(gridSize);
     this.targetGrid = new Grid(gridSize);
     this.initialBoats = [Carrier, Battleship, Cruiser, Submarine, Destroyer];
@@ -33,7 +38,7 @@ export class Player {
    * Place all the player's boats on the grid
    * Throw an error if the grid is not large enough
    */
-  placeBoats(): void {
+  public placeBoats(): void {
     const numberOfBoats = this.initialBoats.length;
 
     for (let i = 0; i < numberOfBoats; i++) {
@@ -45,10 +50,40 @@ export class Player {
 
       this.grid.placeBoat(boat, location, direction);
     }
+
+    this.placedBoats = true;
   }
 
-  play(): void {
-    const randomHit: GridLocation = this.grid.getRandomFreeLocation();
-    this.grid.hitAt(randomHit);
+  /**
+   * Makes the player choose a hit on the opponent's grid
+   * @returns the choosen hit location
+   */
+  public getHit(): GridLocation {
+    if (!this.placedBoats)
+      throw new PlayerDidNotPlaceBoatsError(
+        "Can't play without placing the boats on the grid\n" +
+          'You might want to call player.placeBoats() before'
+      );
+
+    // Get a random square on the opponent's grid
+    const randomHit: GridLocation = this.targetGrid.getRandomFreeLocation();
+
+    return randomHit;
+  }
+
+  /**
+   * Returns wether the player lost the game
+   * It happens when all of his boats are hit
+   * @returns True if the player lost, false otherwise
+   */
+  public didLoose(): boolean {
+    return this.grid
+      .getSquares()
+      .filter((s) => s.hasABoat())
+      .every((s) => s.hasBeenHit());
+  }
+
+  public toString(): string {
+    return this.targetGrid.toString() + '\n\n' + this.grid.toString();
   }
 }

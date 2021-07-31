@@ -29,8 +29,12 @@ export class Square {
     this.content = boat.id;
   }
 
-  isEmpty(): boolean {
-    return this.status === SquareStatus.Empty && this.content === undefined;
+  hasBeenHit(): boolean {
+    return this.status === SquareStatus.Hit;
+  }
+
+  canBeHit(): boolean {
+    return this.status === SquareStatus.Empty || this.hasABoat();
   }
 
   hasABoat(): boolean {

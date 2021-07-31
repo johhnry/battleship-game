@@ -1,7 +1,11 @@
 import { Boat } from './Boat';
 import { GridLocation } from './GridLocation';
 import { Square, SquareStatus } from './Square';
-import { chooseRandomFrom, initializeTwoDimensionalArray } from './utils';
+import {
+  chooseRandomFrom,
+  flattenTwoDimensionalArray,
+  initializeTwoDimensionalArray
+} from './utils';
 import {
   SquareAlreadyMissError,
   InvalidSquareError,
@@ -41,7 +45,12 @@ export class Grid {
    * @param size the size of the grid
    */
   constructor(size: number) {
-    if (size <= 0) throw new InvalidGridSizeError();
+    if (size <= 0) {
+      throw new InvalidGridSizeError(
+        "Can't create a grid with negative or empty size"
+      );
+    }
+
     this.size = size;
     this.squares = initializeTwoDimensionalArray(this.size, this.size, Square);
   }
@@ -55,7 +64,7 @@ export class Grid {
         const square = this.getSquareAt(i, j);
 
         // If the square is empty, add it to the list
-        if (square.isEmpty()) {
+        if (square.canBeHit()) {
           freeLocations.push(new GridLocation(i, j));
         }
       }
@@ -167,23 +176,33 @@ export class Grid {
   /**
    * Hit on the grid at a specific location
    * @param hitLocation the position to hit
+   * @param forceHit if true, hit the square
+   * @returns the result of the hit, either hit or miss
    */
-  hitAt(hitLocation: GridLocation): void {
+  hitAt(
+    hitLocation: GridLocation,
+    forceHit = false
+  ): SquareStatus.Hit | SquareStatus.Miss {
     if (!this.isLocationValid(hitLocation)) throw new InvalidSquareError();
 
     const squareHit: Square = this.getSquareAtLocation(hitLocation);
 
+    if (forceHit) {
+      squareHit.hit();
+      return SquareStatus.Hit;
+    }
+
     switch (squareHit.status) {
       case SquareStatus.Empty:
         squareHit.miss();
-        break;
+        return SquareStatus.Miss;
       case SquareStatus.Boat:
         squareHit.hit();
-        break;
+        return SquareStatus.Hit;
       case SquareStatus.Hit:
-        throw new BoatAlreadyHitError();
+        throw new BoatAlreadyHitError(`Boat already hit at ${hitLocation}`);
       case SquareStatus.Miss:
-        throw new SquareAlreadyMissError();
+        throw new SquareAlreadyMissError(`Already miss at ${hitLocation}`);
     }
   }
 
@@ -233,6 +252,13 @@ export class Grid {
     }
 
     return chooseRandomFrom(placements);
+  }
+
+  /**
+   * @returns The array of squares flatten
+   */
+  getSquares(): Square[] {
+    return flattenTwoDimensionalArray(this.squares);
   }
 
   toString(): string {
