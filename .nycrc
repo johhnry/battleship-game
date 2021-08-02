@@ -11,7 +11,7 @@
   "exclude": [
     "**/*.d.ts",
     "**/*.spec.ts",
-    "**/cli.ts"
+    "**/main.ts"
   ],
   "reporter": [
     "html",
