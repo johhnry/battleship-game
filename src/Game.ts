@@ -71,7 +71,7 @@ export class Game {
 
   /**
    * Play a turn if the game has not ended (throw an exception otherwise)
-   * One player declare a hit and fill it's own target grid and the opponent's one
+   * One player declare a hit and fill it's own grid and the opponent's one
    */
   public turn(): void {
     if (!this.ended()) {

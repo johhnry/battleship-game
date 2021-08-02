@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { expect } from 'chai';
 import { Grid, CardinalDirection } from '../src/Grid';
 import {
@@ -10,7 +11,7 @@ import {
   SquareAlreadyMissError
 } from '../src/errors';
 import { GridLocation } from '../src/GridLocation';
-import { SquareStatus } from '../src/Square';
+import { Square, SquareStatus } from '../src/Square';
 import { Battleship, boats, Cruiser, Destroyer, Submarine } from '../src/Boat';
 
 describe('Grid creation', function () {
@@ -157,7 +158,7 @@ describe('Grid behavior', function () {
     // For all the possible boats
     for (const boat of boats) {
       const grid = new Grid(boat.size);
-      const possibleLocations = grid.getPossibleBoatPlacements(boat);
+      const possibleLocations = grid.getAllPossibleBoatPlacements(boat);
 
       // Compute the number of possible locations for a boat
       const expectedNumberOfPossibleLocations = 8 + (grid.size - 2) * 4;
@@ -198,5 +199,27 @@ describe('Grid behavior', function () {
                                 | |5|`.replace(/  +/g, '');
 
     expect(grid.toString()).to.be.equal(expectedGridString);
+  });
+
+  it('Should force the hit', function () {
+    const grid = new Grid(5);
+    grid.hitAt(new GridLocation(4, 2), true);
+    expect(grid.getSquareAt(4, 2).hasBeenHit()).to.be.true;
+  });
+
+  it('Should return the flattened list of squares', function () {
+    const grid = new Grid(2);
+
+    grid.hitAt(new GridLocation(1, 1), true);
+    grid.hitAt(new GridLocation(0, 1), false);
+
+    const expectedSquares = [
+      new Square(),
+      new Square(),
+      new Square(SquareStatus.Miss),
+      new Square(SquareStatus.Hit)
+    ];
+
+    expect(grid.getSquares()).deep.equal(expectedSquares);
   });
 });

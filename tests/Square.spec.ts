@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { Cruiser } from '../src/Boat';
+import { SquareHitError, SquareMissError } from '../src/errors';
 import { Square, SquareStatus } from '../src/Square';
 
 describe('Square creation', function () {
@@ -33,7 +34,7 @@ describe('Square behavior', function () {
 
   it('Should hit the square', function () {
     const square = new Square();
-    square.hit();
+    square.hit(true);
     expect(square).to.have.property('status', SquareStatus.Hit);
   });
 
@@ -47,7 +48,7 @@ describe('Square behavior', function () {
     const square = new Square();
     expect(square.toString()).to.be.equal(' ');
 
-    square.hit();
+    square.hit(true);
     expect(square.toString()).to.be.equal('X');
 
     square.miss();
@@ -58,5 +59,23 @@ describe('Square behavior', function () {
 
     square.content = undefined;
     expect(square.toString()).to.be.equal('B');
+  });
+
+  it('Should have been hit', function () {
+    const square = new Square();
+    square.hit(true);
+
+    expect(square.hasBeenHit()).to.be.true;
+  });
+
+  it("Can't be miss when there's a boat", function () {
+    const square = new Square();
+    square.placeBoat(Cruiser);
+    expect(() => square.miss()).to.throw(SquareMissError);
+  });
+
+  it("Can't be hit when there's a boat", function () {
+    const square = new Square();
+    expect(() => square.hit()).to.throw(SquareHitError);
   });
 });

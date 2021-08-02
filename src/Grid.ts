@@ -17,6 +17,10 @@ import {
   BoatAlreadyHitError
 } from './errors';
 
+/**
+ * Enum for cardinal directions
+ * Used to position the boats on the grid
+ */
 export enum CardinalDirection {
   NORTH,
   EAST,
@@ -24,6 +28,9 @@ export enum CardinalDirection {
   WEST
 }
 
+/**
+ * The array of possible directions
+ */
 const cardinalDirections = [
   CardinalDirection.NORTH,
   CardinalDirection.EAST,
@@ -31,11 +38,18 @@ const cardinalDirections = [
   CardinalDirection.WEST
 ];
 
+/**
+ * Represents the information to put a boat on the grid
+ */
 type BoatPlacement = {
   location: GridLocation;
   direction: CardinalDirection;
 };
 
+/**
+ * The Grid class is essentially a two dimensional array
+ * It contains useful methods to put boats and hit on the grid
+ */
 export class Grid {
   size: number;
   squares: Square[][] = [];
@@ -55,6 +69,10 @@ export class Grid {
     this.squares = initializeTwoDimensionalArray(this.size, this.size, Square);
   }
 
+  /**
+   * Return a free location on the grid
+   * @returns the location associated to that free square
+   */
   getRandomFreeLocation(): GridLocation {
     const freeLocations: GridLocation[] = [];
 
@@ -78,14 +96,29 @@ export class Grid {
     return chooseRandomFrom(freeLocations);
   }
 
+  /**
+   * @param location the location to query
+   * @returns the queried square
+   */
   getSquareAtLocation(location: GridLocation): Square {
     return this.squares[location.col][location.row];
   }
 
+  /**
+   * @param col the column to query
+   * @param row the row to query
+   * @returns the queried square
+   */
   getSquareAt(col: number, row: number): Square {
     return this.getSquareAtLocation(new GridLocation(col, row));
   }
 
+  /**
+   * Return wether a GridLocation is valid according to the grid size
+   * If false, it's out of the bounds
+   * @param location the location to query
+   * @returns true if valid
+   */
   isLocationValid(location: GridLocation): boolean {
     return (
       location.col >= 0 &&
@@ -95,19 +128,36 @@ export class Grid {
     );
   }
 
+  /**
+   * Return true if the location is valid and empty
+   * @param location the location to query
+   * @returns true if it's empty
+   */
   isLocationFree(location: GridLocation): boolean {
     return (
       this.isLocationValid(location) &&
-      !this.getSquareAtLocation(location).hasABoat()
+      this.getSquareAtLocation(location).isEmpty()
     );
   }
 
+  /**
+   * @param locations the array of locations to check
+   * @returns true if all the locations are free
+   */
   areLocationsFree(locations: GridLocation[]): boolean {
     return locations
       .map((loc) => this.isLocationFree(loc))
       .every((valid) => valid === true);
   }
 
+  /**
+   * Compute the locations of a boat at a certain position
+   * and direction on the grid
+   * @param boat the boat to query
+   * @param location the origin location of the boat
+   * @param direction the direction of the boat
+   * @returns the array of locations that the boat is going to take
+   */
   getBoatSquaresWithDirection(
     boat: Boat,
     location: GridLocation,
@@ -187,8 +237,9 @@ export class Grid {
 
     const squareHit: Square = this.getSquareAtLocation(hitLocation);
 
+    // When we want to mark the target grid, we force the hit
     if (forceHit) {
-      squareHit.hit();
+      squareHit.hit(true);
       return SquareStatus.Hit;
     }
 
@@ -206,24 +257,34 @@ export class Grid {
     }
   }
 
-  getPossibleBoatPlacements(boat: Boat): BoatPlacement[] {
+  /**
+   * Return all the possible boat placement
+   * @param boat the boat to query
+   * @returns an array of locations and directions
+   */
+  getAllPossibleBoatPlacements(boat: Boat): BoatPlacement[] {
     const boatPossiblePlacements: BoatPlacement[] = [];
 
+    // Go through the grid
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
+        // For each direction
         for (const cardinalDirection of cardinalDirections) {
           const currentLocation = new GridLocation(i, j);
 
+          // Get boat squares
           const boatLocations = this.getBoatSquaresWithDirection(
             boat,
             new GridLocation(i, j),
             cardinalDirection
           );
 
+          // Test if the squares are free to use
           const placementValid = boatLocations.every((loc) =>
             this.isLocationFree(loc)
           );
 
+          // Add the placement if successfull
           if (placementValid) {
             boatPossiblePlacements.push({
               location: currentLocation,
@@ -243,11 +304,13 @@ export class Grid {
    * @returns a random available placement for the boat
    */
   getRandomPossibleBoatPlacement(boat: Boat): BoatPlacement {
-    const placements = this.getPossibleBoatPlacements(boat);
+    const placements = this.getAllPossibleBoatPlacements(boat);
 
     if (placements.length === 0) {
       throw new NoMoreAvailableBoatPlacementError(
-        `No more valid places to put a ${boat}`
+        `No more valid places to put a boat ${boat.id} of size ${
+          boat.size
+        }\n${this.toString()}`
       );
     }
 
@@ -255,12 +318,15 @@ export class Grid {
   }
 
   /**
-   * @returns The array of squares flatten
+   * @returns the array of squares flatten
    */
   getSquares(): Square[] {
     return flattenTwoDimensionalArray(this.squares);
   }
 
+  /**
+   * @returns the string representation of the Grid
+   */
   toString(): string {
     let result = '';
 

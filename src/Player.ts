@@ -8,9 +8,14 @@ import {
   Destroyer
 } from './Boat';
 import { GridLocation } from './GridLocation';
+import { BoatPlacementError } from './errors';
 
 export class PlayerDidNotPlaceBoatsError extends Error {}
 
+/**
+ * The Player class is responsible for keeping two grids,
+ * one for itself and one for the opponent's reference
+ */
 export class Player {
   /** The initial list of boats the user have to put on the grid */
   initialBoats: Boat[];
@@ -18,7 +23,10 @@ export class Player {
   /** The player's grid where the boats are placed */
   grid: Grid;
 
-  /** The target grid is where the player puts the hit and misses of the oponnent's grid */
+  /**
+   * The target grid is where the player puts the hit
+   * and misses of the oponnent's grid
+   */
   targetGrid: Grid;
 
   /** Wether or not the player placed his boats */
@@ -83,6 +91,9 @@ export class Player {
       .every((s) => s.hasBeenHit());
   }
 
+  /**
+   * @returns The string representation of the Player, it's two grids
+   */
   public toString(): string {
     return this.targetGrid.toString() + '\n\n' + this.grid.toString();
   }
