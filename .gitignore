@@ -39,3 +39,6 @@ dist/**/*
 
 # nyc and Istanbul
 .nyc_output
+
+# TypeDoc
+docs

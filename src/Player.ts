@@ -8,7 +8,6 @@ import {
   Destroyer
 } from './Boat';
 import { GridLocation } from './GridLocation';
-import { BoatPlacementError } from './errors';
 
 export class PlayerDidNotPlaceBoatsError extends Error {}
 

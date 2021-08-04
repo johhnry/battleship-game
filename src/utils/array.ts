@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 /**
  * Return a random element of an array
  * @param array the array to choose from
